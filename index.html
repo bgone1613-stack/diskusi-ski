@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Diskusi & Tanya Jawab SKI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #059669; /* Emerald / Hijau Zamrud */
+            --primary-light: #ECFDF5;
+            --bg-color: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
+        .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .header p { font-size: 14px; opacity: 0.9; }
+        .content { padding: 30px; }
+        
+        /* Kotak Tampilan Chat / Diskusi dengan Avatar */
+        .chat-container { height: 440px; overflow-y: auto; background: #F1F5F9; border-radius: 12px; padding: 16px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--border); }
+        .chat-item { display: flex; align-items: flex-start; gap: 12px; }
+        .chat-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #E2E8F0; border: 2px solid #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-shrink: 0; }
+        .chat-bubble { flex-grow: 1; background: white; padding: 14px 18px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        .chat-user { font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .chat-text { font-size: 14px; color: var(--text-main); line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
+        .chat-time { font-size: 11px; color: var(--text-muted); font-weight: 400; }
+        
+        /* Balasan Guru */
+        .teacher-reply { background: #ECFDF5; border-left: 4px solid var(--primary); margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #065F46; line-height: 1.4; }
+        .teacher-badge { font-weight: 700; font-size: 11px; color: #047857; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+
+        /* Form Kirim Pesan */
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: var(--text-main); }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background-color: #FFFFFF; color: var(--text-main); }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); }
+        .form-group textarea { resize: vertical; min-height: 90px; }
+        
+        .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn:hover { background-color: #047857; }
+        .btn:disabled { background-color: #CBD5E1; cursor: not-allowed; }
+        
+        .input-card { background: #FAFAFA; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1><i class="fa-solid fa-comments"></i> Ruang Diskusi Materi SKI</h1>
+        <p>Diskusikan materi pelajaran, tanyakan hal yang belum jelas, atau berbagi wawasan seputar Sejarah Kebudayaan Islam</p>
+    </div>
+    
+    <div class="content">
+        <!-- Feed Diskusi -->
+        <div class="chat-container" id="chat-container">
+            <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Memuat ruang diskusi...</div>
+        </div>
+
+        <!-- Kolom Kirim Pertanyaan/Diskusi Baru -->
+        <div class="input-card">
+            <div class="form-group">
+                <label for="chat-name">Nama Lengkap & Kelas</label>
+                <input type="text" id="chat-name" placeholder="Contoh: Muhammad Rizki (Kelas 8A)">
+            </div>
+            <div class="form-group">
+                <label for="chat-msg">Pertanyaan / Topik Diskusi</label>
+                <textarea id="chat-msg" placeholder="Tuliskan pertanyaan seputar materi SKI, peristiwa sejarah, atau hal yang ingin didiskusikan..."></textarea>
+            </div>
+            <button class="btn" id="chat-btn" onclick="sendDiscussion()" disabled>
+                <i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEfbt6tgV39SMafWW1KdNDSTPpaVfW8zpc-nr2z0TnMuu8wWS_ULyznSfTE0iELpFy-Q/exec';
+
+    document.getElementById("chat-name").addEventListener("input", checkValidity);
+    document.getElementById("chat-msg").addEventListener("input", checkValidity);
+
+    function checkValidity() {
+        const name = document.getElementById("chat-name").value.trim();
+        const msg = document.getElementById("chat-msg").value.trim();
+        document.getElementById("chat-btn").disabled = !(name && msg);
+    }
+
+    // Ambil data diskusi saat halaman dibuka & refresh otomatis setiap 10 detik
+    window.onload = function() {
+        fetchDiscussions();
+        setInterval(fetchDiscussions, 10000); 
+    };
+
+    function fetchDiscussions() {
+        fetch(SCRIPT_URL)
+        .then(response => response.json())
+        .then(data => {
+            const container = document.getElementById("chat-container");
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Belum ada topik diskusi. Jadilah yang pertama memulai diskusi!</div>`;
+                return;
+            }
+
+            data.forEach(item => {
+                let dateStr = new Date(item.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
+                
+                // Membuat avatar otomatis berdasarkan nama menggunakan layanan ui-avatars
+                let encodedName = encodeURIComponent(item.name || 'User');
+                let avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=059669&color=fff&size=128&bold=true`;
+                
+                let replyHTML = "";
+                if (item.reply && item.reply.trim() !== "") {
+                    replyHTML = `
+                        <div class="teacher-reply">
+                            <div class="teacher-badge"><i class="fa-solid fa-chalkboard-user"></i> Balasan Guru SKI</div>
+                            ${escapeHtml(item.reply)}
+                        </div>
+                    `;
+                }
+
+                let bubble = `
+                    <div class="chat-item">
+                        <img src="${avatarUrl}" alt="${escapeHtml(item.name)}" class="chat-avatar">
+                        <div class="chat-bubble">
+                            <div class="chat-user">
+                                <span>${escapeHtml(item.name)}</span>
+                                <span class="chat-time">${dateStr}</span>
+                            </div>
+                            <div class="chat-text">${escapeHtml(item.content)}</div>
+                            ${replyHTML}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += bubble;
+            });
+            container.scrollTop = container.scrollHeight; // Auto scroll ke bawah
+        })
+        .catch(err => {
+            console.error("Gagal memuat diskusi:", err);
+            document.getElementById("chat-container").innerHTML = `<div style="text-align: center; color: #EF4444; font-size: 13px; padding: 40px;">Gagal memuat diskusi. Periksa kembali URL Script Anda.</div>`;
+        });
+    }
+
+    function sendDiscussion() {
+        const name = document.getElementById("chat-name").value.trim();
+        const msg = document.getElementById("chat-msg").value.trim();
+        const chatBtn = document.getElementById("chat-btn");
+
+        chatBtn.disabled = true;
+        chatBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
+
+        const payload = {
+            name: name,
+            content: msg,
+            reply: ""
+        };
+
+        fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            document.getElementById("chat-msg").value = "";
+            chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi`;
+            setTimeout(fetchDiscussions, 1000); // Segarkan chat langsung
+        }).catch(err => {
+            alert("Gagal mengirim pesan diskusi.");
+            chatBtn.disabled = false;
+            chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi`;
+        });
+    }
+
+    function escapeHtml(text) {
+        if (!text) return "";
+        return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    }
+</script>
+</body>
+</html>
