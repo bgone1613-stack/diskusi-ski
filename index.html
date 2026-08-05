@@ -19,7 +19,18 @@
             --border: #E2E8F0;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 20px; }
+        body { 
+    background-color: var(--bg-color); 
+    color: var(--text-main); 
+    width: 100%;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; 
+    display: flex;                  /* Membuat sistem pengatur posisi aktif */
+    justify-content: center;        /* Memposisikan kuis agar ke tengah secara horizontal */
+    align-items: flex-start;        /* Menjaga posisi kuis tetap di atas (tidak melayang di tengah vertikal) */
+}
         .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
         .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 30px; text-align: center; }
         .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; }
