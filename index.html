@@ -155,20 +155,24 @@
         studentClass = urlParams.get('class');
     } catch (e) {}
 
-    // Cek dari parent window jika termuat di dalam iframe Google Sites
-    if (!studentName) {
-        try {
-            const parentParams = new URLSearchParams(window.parent.location.search);
-            studentName = parentParams.get('name');
-            studentClass = parentParams.get('class');
-        } catch (e) {}
-    }
-
-    // Fallback terakhir ke localStorage
+    // Fallback ke localStorage jika parameter URL kosong
     if (!studentName) {
         studentName = localStorage.getItem('loggedInName') || "";
         studentClass = localStorage.getItem('loggedInClass') || "";
     }
+
+    // Listener postMessage untuk menerima data login dari parent window jika disematkan via iframe
+    window.addEventListener('message', function(event) {
+        try {
+            if (event.data && event.data.name) {
+                studentName = event.data.name;
+                studentClass = event.data.class || "";
+                localStorage.setItem('loggedInName', studentName);
+                localStorage.setItem('loggedInClass', studentClass);
+                document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
+            }
+        } catch (e) {}
+    });
 
     window.onload = function() {
         if (!studentName || !studentClass) {
