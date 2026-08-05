@@ -31,13 +31,13 @@
             align-items: flex-start;        
         }
         .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
-        .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 30px; text-align: center; }
-        .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .header p { font-size: 14px; opacity: 0.9; }
-        .content { padding: 30px; }
+        .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 25px; text-align: center; }
+        .header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .header p { font-size: 13px; opacity: 0.9; }
+        .content { padding: 25px; }
         
-        /* Kotak Tampilan Chat / Diskusi dengan Avatar */
-        .chat-container { height: 440px; overflow-y: auto; background: #F1F5F9; border-radius: 12px; padding: 16px; margin-bottom: 25px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--border); }
+        /* Kotak Tampilan Chat */
+        .chat-container { height: 400px; overflow-y: auto; background: #F1F5F9; border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 16px; border: 1px solid var(--border); }
         .chat-item { display: flex; align-items: flex-start; gap: 12px; }
         .chat-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #E2E8F0; border: 2px solid #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-shrink: 0; }
         .chat-bubble { flex-grow: 1; background: white; padding: 14px 18px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid var(--border); }
@@ -49,20 +49,20 @@
         .teacher-reply { background: #ECFDF5; border-left: 4px solid var(--primary); margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #065F46; line-height: 1.4; }
         .teacher-badge { font-weight: 700; font-size: 11px; color: #047857; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
+        /* Status Login Info */
+        .user-status-card { background: var(--primary-light); border: 1px solid #A7F3D0; border-radius: 8px; padding: 10px 14px; margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; font-size: 13px; color: #065F46; font-weight: 600; }
+
         /* Form Kirim Pesan */
-        .form-group { margin-bottom: 15px; text-align: left; }
+        .form-group { margin-bottom: 12px; text-align: left; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: var(--text-main); }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background-color: #FFFFFF; color: var(--text-main); }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
-        .form-group textarea { resize: vertical; min-height: 90px; }
+        .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background-color: #FFFFFF; color: var(--text-main); resize: vertical; min-height: 80px; }
+        .form-group textarea:focus { border-color: var(--primary); }
         
-        .row-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
-        
-        .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn { background-color: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn:hover { background-color: #047857; }
         .btn:disabled { background-color: #CBD5E1; cursor: not-allowed; }
         
-        .input-card { background: #FAFAFA; border: 1px solid var(--border); border-radius: 12px; padding: 20px; }
+        .input-card { background: #FAFAFA; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
     </style>
 </head>
 <body>
@@ -70,7 +70,7 @@
 <div class="container">
     <div class="header">
         <h1><i class="fa-solid fa-comments"></i> Ruang Diskusi Materi SKI</h1>
-        <p>Diskusikan materi pelajaran, tanyakan hal yang belum jelas, atau berbagi wawasan seputar Sejarah Kebudayaan Islam</p>
+        <p>Diskusikan materi pelajaran, tanyakan hal yang belum jelas seputar Sejarah Kebudayaan Islam</p>
     </div>
     
     <div class="content">
@@ -79,32 +79,17 @@
             <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Memuat ruang diskusi...</div>
         </div>
 
-        <!-- Kolom Kirim Pertanyaan/Diskusi Baru -->
+        <!-- Kolom Kirim Pesan Otomatis berdasarkan Login -->
         <div class="input-card">
-            <div class="row-grid">
-                <div class="form-group">
-                    <label for="chat-name">Nama Lengkap</label>
-                    <input type="text" id="chat-name" placeholder="Contoh: M. Ali">
-                </div>
-                <div class="form-group">
-                    <label for="chat-class">Kelas</label>
-                    <select id="chat-class">
-                        <option value="">Pilih...</option>
-                        <option value="7">Kelas 7</option>
-                        <option value="8">Kelas 8</option>
-                        <option value="9">Kelas 9</option>
-                        <option value="8A">8A</option>
-                        <option value="8B">8B</option>
-                        <option value="8C">8C</option>
-                    </select>
-                </div>
+            <div class="user-status-card" id="user-status">
+                <span><i class="fa-solid fa-user-check"></i> Masuk sebagai: <strong id="display-user">-</strong></span>
             </div>
             <div class="form-group">
-                <label for="chat-msg">Pertanyaan / Topik Diskusi</label>
-                <textarea id="chat-msg" placeholder="Tuliskan pertanyaan seputar materi SKI, peristiwa sejarah, atau hal yang ingin didiskusikan..."></textarea>
+                <label for="chat-msg">Tulis Pertanyaan / Topik Diskusi</label>
+                <textarea id="chat-msg" placeholder="Tuliskan pertanyaan seputar materi SKI..."></textarea>
             </div>
             <button class="btn" id="chat-btn" onclick="sendDiscussion()" disabled>
-                <i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi
+                <i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan
             </button>
         </div>
     </div>
@@ -114,22 +99,30 @@
     // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzY2lguEAed1jFjCBSHDAaZk0xlENjQlB8XltBqxbRfAbXjfpdz0kPM5rHn5k_nDzAU/exec';
 
-    document.getElementById("chat-name").addEventListener("input", checkValidity);
-    document.getElementById("chat-class").addEventListener("change", checkValidity);
-    document.getElementById("chat-msg").addEventListener("input", checkValidity);
+    // Ambil data login dari localStorage (pastikan saat halaman login sukses, Anda menyimpan nama & kelas dengan key ini)
+    // Contoh saat login sukses di halaman lain: 
+    // localStorage.setItem('loggedInName', namaSiswa);
+    // localStorage.setItem('loggedInClass', kelasSiswa);
+    const studentName = localStorage.getItem('loggedInName') || "";
+    const studentClass = localStorage.getItem('loggedInClass') || "";
 
-    function checkValidity() {
-        const name = document.getElementById("chat-name").value.trim();
-        const sClass = document.getElementById("chat-class").value;
-        const msg = document.getElementById("chat-msg").value.trim();
-        document.getElementById("chat-btn").disabled = !(name && sClass && msg);
-    }
-
-    // Ambil data diskusi saat halaman dibuka & refresh otomatis setiap 10 detik
     window.onload = function() {
+        if (!studentName || !studentClass) {
+            alert("Anda belum melakukan login! Silakan login terlebih dahulu.");
+            // window.location.href = "login.html"; // Uncomment jika ingin diarahkan otomatis ke halaman login
+            document.getElementById("display-user").innerText = "Tamu (Belum Login)";
+        } else {
+            document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
+        }
+
         fetchDiscussions();
-        setInterval(fetchDiscussions, 10000); 
+        setInterval(fetchDiscussions, 10000); // Refresh chat tiap 10 detik
     };
+
+    document.getElementById("chat-msg").addEventListener("input", function() {
+        const msg = this.value.trim();
+        document.getElementById("chat-btn").disabled = !(msg && studentName);
+    });
 
     function fetchDiscussions() {
         fetch(SCRIPT_URL + "?action=getDiskusi")
@@ -145,7 +138,6 @@
 
             data.forEach(item => {
                 let dateStr = new Date(item.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-                
                 let encodedName = encodeURIComponent(item.name || 'User');
                 let avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=059669&color=fff&size=128&bold=true`;
                 
@@ -174,29 +166,31 @@
                 `;
                 container.innerHTML += bubble;
             });
-            container.scrollTop = container.scrollHeight; // Auto scroll ke bawah
+            container.scrollTop = container.scrollHeight;
         })
         .catch(err => {
             console.error("Gagal memuat diskusi:", err);
-            document.getElementById("chat-container").innerHTML = `<div style="text-align: center; color: #EF4444; font-size: 13px; padding: 40px;">Gagal memuat diskusi. Periksa kembali URL Script Anda.</div>`;
         });
     }
 
     function sendDiscussion() {
-        const name = document.getElementById("chat-name").value.trim();
-        const sClass = document.getElementById("chat-class").value;
+        if (!studentName || !studentClass) {
+            alert("Silakan login terlebih dahulu untuk mengirim pesan.");
+            return;
+        }
+
         const msg = document.getElementById("chat-msg").value.trim();
         const chatBtn = document.getElementById("chat-btn");
 
-        if (!name || !sClass || !msg) return;
+        if (!msg) return;
 
         chatBtn.disabled = true;
         chatBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
 
         const payload = {
             action: "diskusi",
-            name: name,
-            class: sClass,
+            name: studentName,
+            class: studentClass,
             content: msg
         };
 
@@ -207,13 +201,13 @@
             body: JSON.stringify(payload)
         }).then(() => {
             document.getElementById("chat-msg").value = "";
-            chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi`;
-            checkValidity();
-            setTimeout(fetchDiscussions, 1000); // Segarkan chat langsung
+            chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan`;
+            chatBtn.disabled = true;
+            setTimeout(fetchDiscussions, 1000); 
         }).catch(err => {
             alert("Gagal mengirim pesan diskusi.");
             chatBtn.disabled = false;
-            chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi`;
+            chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan`;
         });
     }
 
