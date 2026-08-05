@@ -99,17 +99,33 @@
     // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzY2lguEAed1jFjCBSHDAaZk0xlENjQlB8XltBqxbRfAbXjfpdz0kPM5rHn5k_nDzAU/exec';
 
-    // Ambil data login dari localStorage (pastikan saat halaman login sukses, Anda menyimpan nama & kelas dengan key ini)
-    // Contoh saat login sukses di halaman lain: 
-    // localStorage.setItem('loggedInName', namaSiswa);
-    // localStorage.setItem('loggedInClass', kelasSiswa);
-    const studentName = localStorage.getItem('loggedInName') || "";
-    const studentClass = localStorage.getItem('loggedInClass') || "";
+    // Ambil data login dari URL Parameter terlebih dahulu (untuk mengatasi isolasi iframe Google Sites)
+    let studentName = "";
+    let studentClass = "";
+
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        studentName = urlParams.get('name');
+        studentClass = urlParams.get('class');
+    } catch (e) {}
+
+    // Cek dari parent window jika termuat di dalam iframe Google Sites
+    if (!studentName) {
+        try {
+            const parentParams = new URLSearchParams(window.parent.location.search);
+            studentName = parentParams.get('name');
+            studentClass = parentParams.get('class');
+        } catch (e) {}
+    }
+
+    // Fallback terakhir ke localStorage
+    if (!studentName) {
+        studentName = localStorage.getItem('loggedInName') || "";
+        studentClass = localStorage.getItem('loggedInClass') || "";
+    }
 
     window.onload = function() {
         if (!studentName || !studentClass) {
-            alert("Anda belum melakukan login! Silakan login terlebih dahulu.");
-            // window.location.href = "login.html"; // Uncomment jika ingin diarahkan otomatis ke halaman login
             document.getElementById("display-user").innerText = "Tamu (Belum Login)";
         } else {
             document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
