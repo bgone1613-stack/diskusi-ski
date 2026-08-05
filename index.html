@@ -108,12 +108,20 @@
         }
         .chat-item { display: flex; align-items: flex-start; gap: 12px; }
         .chat-avatar { width: 42px; height: 42px; border-radius: 50%; object-fit: cover; background: #E2E8F0; border: 2px solid #FFFFFF; box-shadow: 0 2px 4px rgba(0,0,0,0.05); flex-shrink: 0; }
+        
+        /* Bubble standar untuk siswa lain */
         .chat-bubble { flex-grow: 1; background: white; padding: 14px 18px; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid var(--border); }
+        
+        /* Bubble khusus untuk pesan milik kita sendiri */
+        .chat-bubble.my-message { background: #ECFDF5; border-color: #A7F3D0; }
+
         .chat-user { font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; }
         .chat-text { font-size: 14px; color: var(--text-main); line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
         .chat-time { font-size: 11px; color: var(--text-muted); font-weight: 400; }
         
-        .teacher-reply { background: #ECFDF5; border-left: 4px solid var(--primary); margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #065F46; line-height: 1.4; }
+        .teacher-reply { background: #FFFFFF; border-left: 4px solid var(--primary); margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #065F46; line-height: 1.4; border-top: 1px solid #E2E8F0; border-right: 1px solid #E2E8F0; border-bottom: 1px solid #E2E8F0; }
+        .my-message .teacher-reply { background: #FFFFFF; } /* Balasan guru di bubble kita tetap kontras */
+
         .teacher-badge { font-weight: 700; font-size: 11px; color: #047857; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
         .user-status-card { background: var(--primary-light); border: 1px solid #A7F3D0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #065F46; font-weight: 600; }
@@ -318,11 +326,15 @@
             data.forEach(item => {
                 let dateStr = new Date(item.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
                 
-                // Membersihkan teks tambahan (seperti teks kurung kelas) agar inisial avatar akurat (misal: "Adelia Ramadhani")
                 let cleanName = (item.name || 'User').replace(/\s*\(.*\)/, '').trim();
                 let encodedName = encodeURIComponent(cleanName);
                 let avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=059669&color=fff&size=128&bold=true`;
                 
+                // Cek apakah pesan ini milik user yang sedang login
+                let isMyMessage = (item.name === studentName);
+                let bubbleClass = isMyMessage ? "chat-bubble my-message" : "chat-bubble";
+                let nameLabel = isMyMessage ? `${escapeHtml(item.name)} <span style="background: var(--primary); color: white; font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: normal; margin-left: 6px;">(Anda)</span>` : escapeHtml(item.name);
+
                 let replyHTML = "";
                 if (item.reply && item.reply.trim() !== "") {
                     replyHTML = `
@@ -336,9 +348,9 @@
                 let bubble = `
                     <div class="chat-item">
                         <img src="${avatarUrl}" alt="${escapeHtml(item.name)}" class="chat-avatar">
-                        <div class="chat-bubble">
+                        <div class="${bubbleClass}">
                             <div class="chat-user">
-                                <span>${escapeHtml(item.name)}</span>
+                                <span>${nameLabel}</span>
                                 <span class="chat-time">${dateStr}</span>
                             </div>
                             <div class="chat-text">${escapeHtml(item.content)}</div>
