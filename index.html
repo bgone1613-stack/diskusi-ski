@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --primary: #059669; /* Emerald / Hijau Zamrud */
+            --primary: #059669; 
             --primary-light: #ECFDF5;
             --bg-color: #F8FAFC;
             --card-bg: #FFFFFF;
@@ -26,7 +26,7 @@
             color: var(--text-main); 
             width: 100%;
             margin: 0;
-            padding: 8px; /* Sedikit padding agar kartu tidak menempel patah di tepi layar */
+            padding: 8px;
             overflow: hidden; 
             display: flex;
             justify-content: center;
@@ -36,10 +36,10 @@
         .container { 
             width: 100%; 
             max-width: 800px; 
-            height: 100%; /* Mengisi penuh tinggi area aman */
+            height: 100%;
             background: var(--card-bg); 
-            border-radius: 16px; /* Mengembalikan bentuk melengkung agar estetik */
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); /* Mengembalikan efek bayangan */
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); 
             display: flex;
             flex-direction: column;
             border: 1px solid var(--border); 
@@ -65,7 +65,6 @@
             gap: 12px;
         }
         
-        /* Kotak Tampilan Chat dengan Flex & Single Scrollbar */
         .chat-container { 
             flex: 1; 
             min-height: 0; 
@@ -85,14 +84,11 @@
         .chat-text { font-size: 14px; color: var(--text-main); line-height: 1.5; word-break: break-word; white-space: pre-wrap; }
         .chat-time { font-size: 11px; color: var(--text-muted); font-weight: 400; }
         
-        /* Balasan Guru */
         .teacher-reply { background: #ECFDF5; border-left: 4px solid var(--primary); margin-top: 10px; padding: 10px 14px; border-radius: 8px; font-size: 13px; color: #065F46; line-height: 1.4; }
         .teacher-badge { font-weight: 700; font-size: 11px; color: #047857; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
 
-        /* Status Login Info */
         .user-status-card { background: var(--primary-light); border: 1px solid #A7F3D0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #065F46; font-weight: 600; }
 
-        /* Form Kirim Pesan */
         .form-group { margin-bottom: 8px; text-align: left; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px; color: var(--text-main); }
         .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; background-color: #FFFFFF; color: var(--text-main); resize: none; height: 55px; }
@@ -120,12 +116,10 @@
     </div>
     
     <div class="content">
-        <!-- Feed Diskusi -->
         <div class="chat-container" id="chat-container">
             <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Memuat ruang diskusi...</div>
         </div>
 
-        <!-- Kolom Kirim Pesan Otomatis berdasarkan Login -->
         <div class="input-card">
             <div class="user-status-card" id="user-status">
                 <span><i class="fa-solid fa-user-check"></i> Masuk sebagai: <strong id="display-user">-</strong></span>
@@ -142,17 +136,15 @@
 </div>
 
 <script>
-    // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
     const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzY2lguEAed1jFjCBSHDAaZk0xlENjQlB8XltBqxbRfAbXjfpdz0kPM5rHn5k_nDzAU/exec';
 
-    // Ambil data login dari URL Parameter terlebih dahulu (untuk mengatasi isolasi iframe Google Sites)
     let studentName = "";
     let studentClass = "";
 
     try {
         const urlParams = new URLSearchParams(window.location.search);
-        studentName = urlParams.get('name');
-        studentClass = urlParams.get('class');
+        studentName = urlParams.get('name') || "";
+        studentClass = urlParams.get('class') || "";
     } catch (e) {}
 
     // Fallback ke localStorage jika parameter URL kosong
@@ -160,19 +152,6 @@
         studentName = localStorage.getItem('loggedInName') || "";
         studentClass = localStorage.getItem('loggedInClass') || "";
     }
-
-    // Listener postMessage untuk menerima data login dari parent window jika disematkan via iframe
-    window.addEventListener('message', function(event) {
-        try {
-            if (event.data && event.data.name) {
-                studentName = event.data.name;
-                studentClass = event.data.class || "";
-                localStorage.setItem('loggedInName', studentName);
-                localStorage.setItem('loggedInClass', studentClass);
-                document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
-            }
-        } catch (e) {}
-    });
 
     window.onload = function() {
         if (!studentName || !studentClass) {
@@ -182,7 +161,7 @@
         }
 
         fetchDiscussions();
-        setInterval(fetchDiscussions, 10000); // Refresh chat tiap 10 detik
+        setInterval(fetchDiscussions, 10000); 
     };
 
     document.getElementById("chat-msg").addEventListener("input", function() {
