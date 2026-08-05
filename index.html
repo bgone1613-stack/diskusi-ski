@@ -65,7 +65,6 @@
             gap: 12px;
         }
         
-        /* Modal / Kotak Pilih Identitas */
         #setup-section {
             display: flex;
             flex-direction: column;
@@ -147,7 +146,6 @@
     </div>
     
     <div class="content">
-        <!-- TAMPILAN 1: PILIH KELAS & NAMA SEBELUM MASUK DISKUSI -->
         <div id="setup-section">
             <div class="setup-card">
                 <h2><i class="fa-solid fa-user-pen"></i> Masuk Ruang Diskusi</h2>
@@ -173,7 +171,6 @@
             </div>
         </div>
 
-        <!-- TAMPILAN 2: RUANG CHAT / DISKUSI UTAMA -->
         <div id="chat-section">
             <div class="chat-container" id="chat-container">
                 <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Memuat ruang diskusi...</div>
@@ -202,9 +199,7 @@
     let studentClass = "";
     let globalStudentData = [];
 
-    // Saat halaman dimuat, ambil data siswa dari Sheet untuk dropdown kelas & nama
     window.onload = function() {
-        // Cek apakah sudah pernah tersimpan di browser sebelumnya
         let savedName = localStorage.getItem('chatLoggedInName');
         let savedClass = localStorage.getItem('chatLoggedInClass');
 
@@ -282,7 +277,6 @@
         studentClass = kelas;
         studentName = nama;
 
-        // Simpan ke localStorage agar tidak perlu memilih ulang saat refresh
         localStorage.setItem('chatLoggedInName', studentName);
         localStorage.setItem('chatLoggedInClass', studentClass);
 
@@ -323,7 +317,10 @@
 
             data.forEach(item => {
                 let dateStr = new Date(item.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
-                let encodedName = encodeURIComponent(item.name || 'User');
+                
+                // Membersihkan teks tambahan (seperti teks kurung kelas) agar inisial avatar akurat (misal: "Adelia Ramadhani")
+                let cleanName = (item.name || 'User').replace(/\s*\(.*\)/, '').trim();
+                let encodedName = encodeURIComponent(cleanName);
                 let avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=059669&color=fff&size=128&bold=true`;
                 
                 let replyHTML = "";
