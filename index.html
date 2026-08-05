@@ -27,22 +27,22 @@
             width: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Mencegah scrollbar ganda di tingkat halaman/body */
+            overflow: hidden; 
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start; /* Membuat konten menempel di atas tanpa jarak */
         }
 
         .container { 
             width: 100%; 
             max-width: 800px; 
-            height: 95vh; /* Membatasi tinggi agar pas di dalam iframe/layar */
+            height: 100vh; /* Membuat tinggi penuh tanpa sisa ruang */
             background: var(--card-bg); 
-            border-radius: 16px; 
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); 
+            border-radius: 0; /* Menghilangkan sudut melengkung agar rapat di atas */
+            box-shadow: none; 
             display: flex;
             flex-direction: column;
-            border: 1px solid var(--border); 
+            border: none; 
             overflow: hidden; 
         }
 
@@ -68,7 +68,7 @@
         /* Kotak Tampilan Chat dengan Flex & Single Scrollbar */
         .chat-container { 
             flex: 1; 
-            min-height: 0; /* Penting untuk fleksibilitas scroll flexbox */
+            min-height: 0; 
             overflow-y: auto; 
             background: #F1F5F9; 
             border-radius: 12px; 
