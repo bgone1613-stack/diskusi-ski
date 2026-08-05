@@ -20,17 +20,16 @@
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { 
-    background-color: var(--bg-color); 
-    color: var(--text-main); 
-    width: 100%;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    overflow: hidden; 
-    display: flex;                  /* Membuat sistem pengatur posisi aktif */
-    justify-content: center;        /* Memposisikan kuis agar ke tengah secara horizontal */
-    align-items: flex-start;        /* Menjaga posisi kuis tetap di atas (tidak melayang di tengah vertikal) */
-}
+            background-color: var(--bg-color); 
+            color: var(--text-main); 
+            width: 100%;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+            display: flex;            
+            justify-content: center;     
+            align-items: flex-start;        
+        }
         .container { width: 100%; max-width: 800px; background: var(--card-bg); border-radius: 16px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
         .header { background: linear-gradient(135deg, #059669 0%, #047857 100%); color: white; padding: 30px; text-align: center; }
         .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 10px; }
@@ -53,9 +52,11 @@
         /* Form Kirim Pesan */
         .form-group { margin-bottom: 15px; text-align: left; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 13px; color: var(--text-main); }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background-color: #FFFFFF; color: var(--text-main); }
-        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary); }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; outline: none; background-color: #FFFFFF; color: var(--text-main); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
         .form-group textarea { resize: vertical; min-height: 90px; }
+        
+        .row-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
         
         .btn { background-color: var(--primary); color: white; border: none; padding: 14px 24px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn:hover { background-color: #047857; }
@@ -80,10 +81,23 @@
 
         <!-- Kolom Kirim Pertanyaan/Diskusi Baru -->
         <div class="input-card">
-            <div class="form-group">
-                <label for="chat-name">Nama Lengkap & Kelas</label>
-                <!-- Contoh pengisian nama diubah ke Kelas 8B -->
-                <input type="text" id="chat-name" placeholder="Contoh: M. Ali (Kelas 8B)">
+            <div class="row-grid">
+                <div class="form-group">
+                    <label for="chat-name">Nama Lengkap</label>
+                    <input type="text" id="chat-name" placeholder="Contoh: M. Ali">
+                </div>
+                <div class="form-group">
+                    <label for="chat-class">Kelas</label>
+                    <select id="chat-class">
+                        <option value="">Pilih...</option>
+                        <option value="7">Kelas 7</option>
+                        <option value="8">Kelas 8</option>
+                        <option value="9">Kelas 9</option>
+                        <option value="8A">8A</option>
+                        <option value="8B">8B</option>
+                        <option value="8C">8C</option>
+                    </select>
+                </div>
             </div>
             <div class="form-group">
                 <label for="chat-msg">Pertanyaan / Topik Diskusi</label>
@@ -98,15 +112,17 @@
 
 <script>
     // MASUKKAN URL GOOGLE APPS SCRIPT WEB APP ANDA DI SINI
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyEfbt6tgV39SMafWW1KdNDSTPpaVfW8zpc-nr2z0TnMuu8wWS_ULyznSfTE0iELpFy-Q/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzY2lguEAed1jFjCBSHDAaZk0xlENjQlB8XltBqxbRfAbXjfpdz0kPM5rHn5k_nDzAU/exec';
 
     document.getElementById("chat-name").addEventListener("input", checkValidity);
+    document.getElementById("chat-class").addEventListener("change", checkValidity);
     document.getElementById("chat-msg").addEventListener("input", checkValidity);
 
     function checkValidity() {
         const name = document.getElementById("chat-name").value.trim();
+        const sClass = document.getElementById("chat-class").value;
         const msg = document.getElementById("chat-msg").value.trim();
-        document.getElementById("chat-btn").disabled = !(name && msg);
+        document.getElementById("chat-btn").disabled = !(name && sClass && msg);
     }
 
     // Ambil data diskusi saat halaman dibuka & refresh otomatis setiap 10 detik
@@ -116,13 +132,13 @@
     };
 
     function fetchDiscussions() {
-        fetch(SCRIPT_URL)
+        fetch(SCRIPT_URL + "?action=getDiskusi")
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById("chat-container");
             container.innerHTML = "";
 
-            if (data.length === 0) {
+            if (!data || data.length === 0) {
                 container.innerHTML = `<div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Belum ada topik diskusi. Jadilah yang pertama memulai diskusi!</div>`;
                 return;
             }
@@ -130,7 +146,6 @@
             data.forEach(item => {
                 let dateStr = new Date(item.timestamp).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' });
                 
-                // Membuat avatar otomatis berdasarkan nama menggunakan layanan ui-avatars
                 let encodedName = encodeURIComponent(item.name || 'User');
                 let avatarUrl = `https://ui-avatars.com/api/?name=${encodedName}&background=059669&color=fff&size=128&bold=true`;
                 
@@ -169,16 +184,20 @@
 
     function sendDiscussion() {
         const name = document.getElementById("chat-name").value.trim();
+        const sClass = document.getElementById("chat-class").value;
         const msg = document.getElementById("chat-msg").value.trim();
         const chatBtn = document.getElementById("chat-btn");
+
+        if (!name || !sClass || !msg) return;
 
         chatBtn.disabled = true;
         chatBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
 
         const payload = {
+            action: "diskusi",
             name: name,
-            content: msg,
-            reply: ""
+            class: sClass,
+            content: msg
         };
 
         fetch(SCRIPT_URL, {
@@ -189,6 +208,7 @@
         }).then(() => {
             document.getElementById("chat-msg").value = "";
             chatBtn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan / Diskusi`;
+            checkValidity();
             setTimeout(fetchDiscussions, 1000); // Segarkan chat langsung
         }).catch(err => {
             alert("Gagal mengirim pesan diskusi.");
