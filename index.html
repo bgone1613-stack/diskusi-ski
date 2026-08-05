@@ -21,7 +21,8 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         
         html, body { 
-            height: 100vh;
+            height: 100dvh;
+            min-height: 100vh;
             background-color: var(--bg-color); 
             color: var(--text-main); 
             width: 100%;
@@ -248,6 +249,7 @@
     let studentClass = "";
     let globalStudentData = [];
     let currentStudentObj = null;
+    let pollInterval = null;
 
     window.onload = function() {
         let savedName = localStorage.getItem('chatLoggedInName');
@@ -320,12 +322,19 @@
         const registerFields = document.getElementById("register-fields");
         const loginFields = document.getElementById("login-fields");
 
-        if (!selectedNama) {
+        if (!selectedNama || !selectedKelas) {
             authArea.style.display = "none";
+            currentStudentObj = null;
             return;
         }
 
         currentStudentObj = globalStudentData.find(item => item.kelas === selectedKelas && item.nama === selectedNama);
+        
+        if (!currentStudentObj) {
+            authArea.style.display = "none";
+            return;
+        }
+
         authArea.style.display = "block";
         hideAlert();
 
@@ -353,6 +362,11 @@
         const kelas = document.getElementById("kelasSelect").value;
         const nama = document.getElementById("namaSelect").value;
         const authBtn = document.getElementById("authBtn");
+
+        if (!currentStudentObj) {
+            showAlert("Silakan pilih ulang kelas dan nama Anda.", "error");
+            return;
+        }
 
         let isRegistering = (!currentStudentObj.password || currentStudentObj.password.trim() === "");
         let passwordToSend = "";
@@ -420,12 +434,15 @@
         document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
 
         fetchDiscussions();
-        setInterval(fetchDiscussions, 10000); 
+        if (!pollInterval) {
+            pollInterval = setInterval(fetchDiscussions, 10000); 
+        }
     }
 
     function logoutChat() {
         localStorage.removeItem('chatLoggedInName');
         localStorage.removeItem('chatLoggedInClass');
+        if (pollInterval) clearInterval(pollInterval);
         location.reload();
     }
 
