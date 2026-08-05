@@ -65,6 +65,36 @@
             gap: 12px;
         }
         
+        /* Modal / Kotak Pilih Identitas */
+        #setup-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+        }
+        .setup-card {
+            background: #FFFFFF;
+            border: 1px solid var(--border);
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .setup-card h2 { font-size: 18px; margin-bottom: 8px; color: var(--primary); }
+        .setup-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+
+        #chat-section {
+            display: none;
+            flex: 1;
+            flex-direction: column;
+            overflow: hidden;
+            gap: 12px;
+        }
+
         .chat-container { 
             flex: 1; 
             min-height: 0; 
@@ -89,10 +119,11 @@
 
         .user-status-card { background: var(--primary-light); border: 1px solid #A7F3D0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 12px; color: #065F46; font-weight: 600; }
 
-        .form-group { margin-bottom: 8px; text-align: left; }
-        .form-group label { display: block; font-weight: 600; margin-bottom: 4px; font-size: 12px; color: var(--text-main); }
-        .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; background-color: #FFFFFF; color: var(--text-main); resize: none; height: 55px; }
-        .form-group textarea:focus { border-color: var(--primary); }
+        .form-group { margin-bottom: 14px; text-align: left; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 6px; font-size: 12px; color: var(--text-main); }
+        .form-group select, .form-group textarea { width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; outline: none; background-color: #FFFFFF; color: var(--text-main); }
+        .form-group textarea { resize: none; height: 55px; }
+        .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
         
         .btn { background-color: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; width: 100%; transition: background 0.2s; display: flex; align-items: center; justify-content: center; gap: 8px; }
         .btn:hover { background-color: #047857; }
@@ -116,21 +147,50 @@
     </div>
     
     <div class="content">
-        <div class="chat-container" id="chat-container">
-            <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Memuat ruang diskusi...</div>
+        <!-- TAMPILAN 1: PILIH KELAS & NAMA SEBELUM MASUK DISKUSI -->
+        <div id="setup-section">
+            <div class="setup-card">
+                <h2><i class="fa-solid fa-user-pen"></i> Masuk Ruang Diskusi</h2>
+                <p>Silakan pilih kelas dan nama kamu terlebih dahulu untuk mulai bertanya.</p>
+                
+                <div class="form-group">
+                    <label for="kelasSelect">Pilih Kelas</label>
+                    <select id="kelasSelect" onchange="updateNameDropdown()">
+                        <option value="">-- Memuat Data Kelas... --</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="namaSelect">Pilih Nama Siswa</label>
+                    <select id="namaSelect" disabled>
+                        <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
+                    </select>
+                </div>
+
+                <button class="btn" id="startBtn" onclick="enterDiscussion()" disabled>
+                    <i class="fa-solid fa-right-to-bracket"></i> Masuk Diskusi
+                </button>
+            </div>
         </div>
 
-        <div class="input-card">
-            <div class="user-status-card" id="user-status">
-                <span><i class="fa-solid fa-user-check"></i> Masuk sebagai: <strong id="display-user">-</strong></span>
+        <!-- TAMPILAN 2: RUANG CHAT / DISKUSI UTAMA -->
+        <div id="chat-section">
+            <div class="chat-container" id="chat-container">
+                <div style="text-align: center; color: var(--text-muted); font-size: 13px; padding: 40px;">Memuat ruang diskusi...</div>
             </div>
-            <div class="form-group">
-                <label for="chat-msg">Tulis Pertanyaan / Topik Diskusi</label>
-                <textarea id="chat-msg" placeholder="Tuliskan pertanyaan seputar materi SKI..."></textarea>
+
+            <div class="input-card">
+                <div class="user-status-card" id="user-status">
+                    <span><i class="fa-solid fa-user-check"></i> Masuk sebagai: <strong id="display-user">-</strong></span>
+                    <button onclick="logoutChat()" style="background: none; border: none; color: #DC2626; cursor: pointer; font-size: 11px; font-weight: 700;"><i class="fa-solid fa-arrow-right-from-bracket"></i> Ganti Nama</button>
+                </div>
+                <div class="form-group" style="margin-bottom: 8px;">
+                    <textarea id="chat-msg" placeholder="Tuliskan pertanyaan seputar materi SKI..."></textarea>
+                </div>
+                <button class="btn" id="chat-btn" onclick="sendDiscussion()" disabled>
+                    <i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan
+                </button>
             </div>
-            <button class="btn" id="chat-btn" onclick="sendDiscussion()" disabled>
-                <i class="fa-solid fa-paper-plane"></i> Kirim Pertanyaan
-            </button>
         </div>
     </div>
 </div>
@@ -140,33 +200,113 @@
 
     let studentName = "";
     let studentClass = "";
+    let globalStudentData = [];
 
-    try {
-        const urlParams = new URLSearchParams(window.location.search);
-        studentName = urlParams.get('name') || "";
-        studentClass = urlParams.get('class') || "";
-    } catch (e) {}
+    // Saat halaman dimuat, ambil data siswa dari Sheet untuk dropdown kelas & nama
+    window.onload = function() {
+        // Cek apakah sudah pernah tersimpan di browser sebelumnya
+        let savedName = localStorage.getItem('chatLoggedInName');
+        let savedClass = localStorage.getItem('chatLoggedInClass');
 
-    // Fallback ke localStorage jika parameter URL kosong
-    if (!studentName) {
-        studentName = localStorage.getItem('loggedInName') || "";
-        studentClass = localStorage.getItem('loggedInClass') || "";
+        if (savedName && savedClass) {
+            studentName = savedName;
+            studentClass = savedClass;
+            showChatRoom();
+        } else {
+            fetchStudentsData();
+        }
+    };
+
+    function fetchStudentsData() {
+        fetch(SCRIPT_URL + '?action=getStudents')
+        .then(response => response.json())
+        .then(data => {
+            globalStudentData = data;
+            populateClassDropdown();
+        })
+        .catch(err => {
+            console.error("Gagal memuat data siswa:", err);
+            document.getElementById("kelasSelect").innerHTML = '<option value="">Gagal memuat data dari server</option>';
+        });
     }
 
-    window.onload = function() {
-        if (!studentName || !studentClass) {
-            document.getElementById("display-user").innerText = "Tamu (Belum Login)";
-        } else {
-            document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
+    function populateClassDropdown() {
+        const kelasSelect = document.getElementById("kelasSelect");
+        let classes = [...new Set(globalStudentData.map(item => item.kelas))].sort();
+        
+        kelasSelect.innerHTML = '<option value="">-- Pilih Kelas --</option>';
+        classes.forEach(kelas => {
+            let option = document.createElement("option");
+            option.value = kelas;
+            option.textContent = kelas;
+            kelasSelect.appendChild(option);
+        });
+    }
+
+    function updateNameDropdown() {
+        const selectedKelas = document.getElementById("kelasSelect").value;
+        const namaSelect = document.getElementById("namaSelect");
+        const startBtn = document.getElementById("startBtn");
+        
+        namaSelect.innerHTML = '<option value="">-- Pilih Nama Siswa --</option>';
+        
+        if (!selectedKelas) {
+            namaSelect.disabled = true;
+            startBtn.disabled = true;
+            return;
         }
+
+        let filteredStudents = globalStudentData.filter(item => item.kelas === selectedKelas);
+        filteredStudents.sort((a, b) => a.nama.localeCompare(b.nama));
+
+        filteredStudents.forEach(student => {
+            let option = document.createElement("option");
+            option.value = student.nama;
+            option.textContent = student.nama;
+            namaSelect.appendChild(option);
+        });
+
+        namaSelect.disabled = false;
+        startBtn.disabled = false;
+    }
+
+    function enterDiscussion() {
+        const kelas = document.getElementById("kelasSelect").value;
+        const nama = document.getElementById("namaSelect").value;
+
+        if (!kelas || !nama) {
+            alert("Silakan pilih kelas dan nama terlebih dahulu!");
+            return;
+        }
+
+        studentClass = kelas;
+        studentName = nama;
+
+        // Simpan ke localStorage agar tidak perlu memilih ulang saat refresh
+        localStorage.setItem('chatLoggedInName', studentName);
+        localStorage.setItem('chatLoggedInClass', studentClass);
+
+        showChatRoom();
+    }
+
+    function showChatRoom() {
+        document.getElementById("setup-section").style.display = "none";
+        document.getElementById("chat-section").style.display = "flex";
+        document.getElementById("display-user").innerText = `${studentName} (Kelas ${studentClass})`;
 
         fetchDiscussions();
         setInterval(fetchDiscussions, 10000); 
-    };
+    }
+
+    function logoutChat() {
+        localStorage.removeItem('chatLoggedInName');
+        localStorage.removeItem('chatLoggedInClass');
+        location.reload();
+    }
 
     document.getElementById("chat-msg").addEventListener("input", function() {
         const msg = this.value.trim();
-        document.getElementById("chat-btn").disabled = !(msg && studentName);
+        document.getElementById("chat-btn").disabled = !msg;
     });
 
     function fetchDiscussions() {
@@ -219,15 +359,10 @@
     }
 
     function sendDiscussion() {
-        if (!studentName || !studentClass) {
-            alert("Silakan login terlebih dahulu untuk mengirim pesan.");
-            return;
-        }
-
         const msg = document.getElementById("chat-msg").value.trim();
         const chatBtn = document.getElementById("chat-btn");
 
-        if (!msg) return;
+        if (!msg || !studentName) return;
 
         chatBtn.disabled = true;
         chatBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...`;
