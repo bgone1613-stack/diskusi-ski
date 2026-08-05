@@ -243,7 +243,7 @@
 </div>
 
 <script>
-    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTVLqINGNgi_Xc_JUUBiZhJDFPqMj5Z3MDASXaQRn5ARNUjLkdueCy7GWtnkc5X9E/exec';
+    const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzbEHCoiqB7RroKf60n6TJbvKP9EvlOyKgHLM-6eOXVLBnVAvlZDsfhSTgZztNYe4C5/exec';
 
     let studentName = "";
     let studentClass = "";
@@ -338,7 +338,8 @@
         authArea.style.display = "block";
         hideAlert();
 
-        if (!currentStudentObj.password || currentStudentObj.password.trim() === "") {
+        // Menggunakan properti hasPassword dari backend yang aman
+        if (!currentStudentObj.hasPassword) {
             registerFields.style.display = "block";
             loginFields.style.display = "none";
             document.getElementById("authBtn").innerHTML = `<i class="fa-solid fa-user-plus"></i> Buat Password & Masuk`;
@@ -368,7 +369,7 @@
             return;
         }
 
-        let isRegistering = (!currentStudentObj.password || currentStudentObj.password.trim() === "");
+        let isRegistering = !currentStudentObj.hasPassword;
         let passwordToSend = "";
 
         if (isRegistering) {
